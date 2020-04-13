@@ -1,0 +1,6 @@
+BASE:
+0 (full CW) to 14
+SHOULDER:
+0 (full back) to 14
+ELBOW:
+0 (full down) to 25 (vertical)

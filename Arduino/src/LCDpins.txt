@@ -1,0 +1,9 @@
+Adafruit    	SainSmart
+LITE	
+SCK	            SCL
+MOSI	        SDA
+TFT_CS      	CS
+D/C	            RS/DC
+RESET	        RES
+VCC	            VCC
+Gnd	            GND
