@@ -180,8 +180,8 @@ def serialComms():
     while True:
        blynk.run() 
 
-#serialLoop = threading.Thread(target = serialComms, args = ())
-#serialLoop.start()
+serialLoop = threading.Thread(target = serialComms, args = ())
+serialLoop.start()
 
 defineButtonControls()
 
