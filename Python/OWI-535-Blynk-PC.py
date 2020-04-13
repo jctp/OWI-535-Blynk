@@ -2,6 +2,9 @@ import serial
 import time
 import os
 import threading
+import pyttsx3
+
+voice = pyttsx3.init()
 
 from roboarm import Arm
 arm = Arm()
@@ -88,6 +91,14 @@ def defineButtonControls():
             arm.led.on(timeout = None)
         if int(value[0]) == 0:
             arm.led.off()
+
+    @blynk.VIRTUAL_WRITE(12)
+    def speechHandler(value):
+        arm.base.stop()
+        arm.shoulder.stop()
+        arm.elbow.stop()
+        voice.say(str(value))
+        voice.runAndWait()
 
 def serialComms():
 
