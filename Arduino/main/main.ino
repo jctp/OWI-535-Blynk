@@ -4,7 +4,7 @@
 #include <Adafruit_ST7735.h> // Hardware-specific library for ST7735
 
 #define TFT_CS        10
-#define TFT_RST        9 // Or set to -1 and connect to Arduino RESET pin
+#define TFT_RST        9
 #define TFT_DC         8
 
 Adafruit_ST7735 tft = Adafruit_ST7735(TFT_CS, TFT_DC, TFT_RST);
@@ -14,22 +14,43 @@ Encoder shoulder(6, 7);
 Encoder elbow(2, 3
 );
 
+void drawEyes(){
+  tft.fillScreen(ST7735_BLACK);
+
+  // Left Eye
+  tft.fillCircle(32, 64, 24, ST7735_WHITE);
+  tft.fillCircle(32, 64, 16, ST7735_BLUE);
+  tft.fillCircle(32, 64, 8, ST7735_BLACK);
+  tft.fillCircle(28, 60, 4, ST7735_WHITE);
+  tft.fillCircle(32, 100, 24, ST7735_BLACK);
+
+  // Right Eye
+  tft.fillCircle(96, 64, 24, ST7735_WHITE);
+  tft.fillCircle(96, 64, 16, ST7735_BLUE);
+  tft.fillCircle(96, 64, 8, ST7735_BLACK);
+  tft.fillCircle(92, 60, 4, ST7735_WHITE);
+  tft.fillCircle(96, 100, 24, ST7735_BLACK);
+
+}
 
 void setup() {
   Serial.begin(9600);
   tft.initR(INITR_144GREENTAB);
+  tft.fillScreen(ST7735_BLACK);
+  tft.println("Serial link up");
+  drawEyes();
 }
 
 void loop() {
-  tft.fillScreen(ST77XX_GREEN);
+
   Serial.println("BASE");
   Serial.println(base.read());
-  tft.fillScreen(ST77XX_RED);
+ 
   Serial.println("SHOULDER");
   Serial.println(shoulder.read());
-  tft.fillScreen(ST77XX_GREEN);
+
   Serial.println("ELBOW");
   Serial.println(elbow.read());
-  tft.fillScreen(ST77XX_RED);
+
 
 }
