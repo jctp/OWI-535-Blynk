@@ -180,17 +180,9 @@ def serialComms():
     while True:
        blynk.run() 
 
-def defineTelemetry():
-    @blynk.VIRTUAL_READ(20)
-    def baseTelemetryHandler():
-        blynk.virtual_write(20, int(baseRot + baseRotOffset))
-
-
-
 serialLoop = threading.Thread(target = serialComms, args = ())
 serialLoop.start()
 
-defineTelemetry()
 defineButtonControls()
 
 while True:
