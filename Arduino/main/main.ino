@@ -21,11 +21,15 @@ void setup() {
 }
 
 void loop() {
+  tft.fillScreen(ST77XX_GREEN);
   Serial.println("BASE");
   Serial.println(base.read());
+  tft.fillScreen(ST77XX_RED);
   Serial.println("SHOULDER");
   Serial.println(shoulder.read());
+  tft.fillScreen(ST77XX_GREEN);
   Serial.println("ELBOW");
   Serial.println(elbow.read());
-  tft.fillScreen(ST77XX_GREEN);
+  tft.fillScreen(ST77XX_RED);
+
 }
