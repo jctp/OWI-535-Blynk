@@ -13,35 +13,46 @@ import BlynkLib
 BLYNK_AUTH = 'fe21DHbGkGWUTaTwSrwwViUyIFGWXSEc'
 blynk = BlynkLib.Blynk(BLYNK_AUTH)
 
+ArduinoSerial = serial.Serial('/dev/ttyUSB0',9600)
+
 def defineButtonControls():
 
     @blynk.VIRTUAL_WRITE(1)
     def baseRotationHandlerCounter(value):
         if int(value[0]) == 1:
             arm.base.rotate_counter(timeout = None)
+            ArduinoSerial.write(b"EYESLEFT")
         if int(value[0]) == 0:
             arm.base.stop()
+            ArduinoSerial.write(b"EYESNORMAL")
 
     @blynk.VIRTUAL_WRITE(2)
     def baseRotationHandlerClock(value):
         if int(value[0]) == 1:
             arm.base.rotate_clock(timeout = None)
+            ArduinoSerial.write(b"EYESRIGHT")
         if int(value[0]) == 0:
             arm.base.stop()
+            ArduinoSerial.write(b"EYESNORMAL")
+
 
     @blynk.VIRTUAL_WRITE(3)
     def shoulderHandlerUp(value):
         if int(value[0]) == 1:
             arm.shoulder.up(timeout = None)
+            ArduinoSerial.write(b"EYESUP")
         if int(value[0]) == 0:
             arm.shoulder.stop()
+            ArduinoSerial.write(b"EYESNORMAL")
 
     @blynk.VIRTUAL_WRITE(4)
     def shoulderHandlerDown(value):
         if int(value[0]) == 1:
             arm.shoulder.down(timeout = None)
+            ArduinoSerial.write(b"EYESDOWN")
         if int(value[0]) == 0:
             arm.shoulder.stop()
+            ArduinoSerial.write(b"EYESNORMAL")
 
     @blynk.VIRTUAL_WRITE(5)
     def elbowHandlerUp(value):
@@ -75,15 +86,19 @@ def defineButtonControls():
     def gripHandlerOpen(value):
         if int(value[0]) == 1:
             arm.grips.open(timeout = None)
+            ArduinoSerial.write(b"PICKUP")
         if int(value[0]) == 0:
             arm.grips.stop()
+            ArduinoSerial.write(b"EYESNORMAL")
 
     @blynk.VIRTUAL_WRITE(10)
     def gripHandlerClose(value):
         if int(value[0]) == 1:
             arm.grips.close(timeout = None)
+            ArduinoSerial.write(b"PICKUP")
         if int(value[0]) == 0:
             arm.grips.stop()
+            ArduinoSerial.write(b"EYESNORMAL")
 
     @blynk.VIRTUAL_WRITE(11)
     def ledHandler(value):
@@ -100,9 +115,15 @@ def defineButtonControls():
         voice.say(str(value))
         voice.runAndWait()
 
+    @blynk.VIRTUAL_WRITE(13)
+    def commsTest(value):
+        if int(value[0]) == 1:
+            ArduinoSerial.write(b"SHOWDIAG")
+        if int(value[0]) == 0:
+            ArduinoSerial.write(b"EYESNORMAL")
+
 def serialComms():
 
-    ArduinoSerial = serial.Serial('/dev/ttyUSB0',9600)
     time.sleep(2)
 
     serialBuffer = ""
@@ -120,6 +141,7 @@ def serialComms():
     cycles = 0
 
     while True:
+
         serialBuffer = str(ArduinoSerial.readline())[2:-5]
         if serialBuffer == "BASE":
             serialBuffer = str(ArduinoSerial.readline())[2:-5]

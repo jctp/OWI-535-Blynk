@@ -21,6 +21,8 @@ Encoder elbow(2, 3
 
 void drawEyes(int hOffset, int vOffset){
 
+  tft.fillScreen(ST7735_BLACK);
+
   // Left Eye
   tft.fillCircle(32, 64, 24, ST7735_WHITE);
   tft.fillCircle((32 + hOffset), (64 + vOffset), 16, ST7735_BLUE);
@@ -38,9 +40,13 @@ void drawEyes(int hOffset, int vOffset){
 }
 
 
-void drawMouth() {
+void drawSmile() {
   tft.fillCircle(64, 96, 10, ST7735_WHITE);
   tft.fillRect(54, 86, 21, 10, ST7735_BLACK);
+}
+
+void drawOhNo() {
+  tft.fillCircle(64, 96, 7, ST7735_WHITE);
 }
 
 void setup() {
@@ -49,7 +55,7 @@ void setup() {
   tft.fillScreen(ST7735_BLACK);
   // tft.println("Serial link up");
   drawEyes(0, 0);
-  drawMouth();
+  drawSmile();
 
   noInterrupts();
   TCCR1A = 0;
@@ -64,6 +70,7 @@ void setup() {
 
 ISR(TIMER1_OVF_vect) {
   TCNT1 = timer1_counter;
+
   Serial.println("BASE");
   Serial.println(base.read());
  
@@ -72,10 +79,63 @@ ISR(TIMER1_OVF_vect) {
 
   Serial.println("ELBOW");
   Serial.println(elbow.read());
+
 }
 
 void loop() {
+  String incomingString = Serial.readString(); 
+
+  if (incomingString == "SHOWDIAG") {
+    tft.fillScreen(ST7735_BLUE);
+    tft.setCursor(0,0);
+    tft.println("DIAGNOSTIC DATA");
+    tft.print("Base: ");
+    tft.println(base.read());
+    tft.print("Shoulder: ");
+    tft.println(shoulder.read());
+    tft.print("Elbow: ");
+    tft.println(elbow.read());
+    tft.print("Interrupt T1: ");
+    tft.println(timer1_counter);
+    incomingString = ""; 
+  }  
+
+  if (incomingString == "EYESNORMAL") {
+    drawEyes(0,0);
+    drawSmile();
+    incomingString = "";
+  }  
   
+  if (incomingString == "EYESLEFT") {
+    drawEyes(6,0);
+    drawSmile();
+    incomingString = "";
+  }  
+
+  if (incomingString == "EYESRIGHT") {
+    drawEyes(-6,0);
+    drawSmile();
+    incomingString = "";
+  }  
+
+  if (incomingString == "EYESUP") {
+    drawEyes(0,-6);
+    drawSmile();
+    incomingString = "";
+  }  
+
+  if (incomingString == "EYESDOWN") {
+    drawEyes(0,6);
+    drawSmile();
+    incomingString = "";
+  }  
+
+  if (incomingString == "PICKUP") {
+    drawEyes(0,6);
+    drawOhNo();
+    incomingString = "";
+  }  
+
   /*
   while (eyeHeight < 6) {
     drawEyes(0,eyeHeight);
