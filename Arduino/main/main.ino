@@ -15,29 +15,26 @@ Encoder shoulder(6, 7);
 Encoder elbow(2, 3
 );
 
-void drawEyes(){
+
+
+void drawEyes(int hOffset, int vOffset){
 
   // Left Eye
   tft.fillCircle(32, 64, 24, ST7735_WHITE);
-  tft.fillCircle(32, 64, 16, ST7735_BLUE);
-  tft.fillCircle(32, 64, 8, ST7735_BLACK);
-  tft.fillCircle(28, 60, 4, ST7735_WHITE);
-  tft.fillCircle(32, 100, 24, ST7735_BLACK);
+  tft.fillCircle((32 + hOffset), (64 + vOffset), 16, ST7735_BLUE);
+  tft.fillCircle((32 + hOffset), (64 + vOffset), 8, ST7735_BLACK);
+  tft.fillCircle((28 + hOffset), (60 + vOffset), 4, ST7735_WHITE);
+  // tft.fillCircle(32, 100, 24, ST7735_BLACK);
 
   // Right Eye
   tft.fillCircle(96, 64, 24, ST7735_WHITE);
-  tft.fillCircle(96, 64, 16, ST7735_BLUE);
-  tft.fillCircle(96, 64, 8, ST7735_BLACK);
-  tft.fillCircle(92, 60, 4, ST7735_WHITE);
-  tft.fillCircle(96, 100, 24, ST7735_BLACK);
+  tft.fillCircle((96 + hOffset), (64 + vOffset), 16, ST7735_BLUE);
+  tft.fillCircle((96 + hOffset), (64 + vOffset), 8, ST7735_BLACK);
+  tft.fillCircle((92 + hOffset), (60 + vOffset), 4, ST7735_WHITE);
+  // tft.fillCircle(96, 100, 24, ST7735_BLACK);
 
 }
 
-void drawBlink(){
-  tft.fillRect(8, 40, 113, 48, ST7735_BLACK);
-  tft.fillRect(8, 60, 49, 8, ST7735_WHITE);
-  tft.fillRect(72, 60, 49, 8, ST7735_WHITE);
-}
 
 void drawMouth() {
   tft.fillCircle(64, 96, 10, ST7735_WHITE);
@@ -49,7 +46,7 @@ void setup() {
   tft.initR(INITR_144GREENTAB);
   tft.fillScreen(ST7735_BLACK);
   // tft.println("Serial link up");
-  drawEyes();
+  drawEyes(0,4);
   drawMouth();
 
 }
