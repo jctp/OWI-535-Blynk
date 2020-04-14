@@ -9,6 +9,8 @@
 
 Adafruit_ST7735 tft = Adafruit_ST7735(TFT_CS, TFT_DC, TFT_RST);
 
+int timer1_counter;
+int eyeHeight = 0;
 
 Encoder base(4, 5);
 Encoder shoulder(6, 7);
@@ -46,34 +48,45 @@ void setup() {
   tft.initR(INITR_144GREENTAB);
   tft.fillScreen(ST7735_BLACK);
   // tft.println("Serial link up");
-  drawEyes(0,4);
+  drawEyes(0, 0);
   drawMouth();
 
+  noInterrupts();
+  TCCR1A = 0;
+  TCCR1B = 0;
+  timer1_counter = 60000;
+
+  TCNT1 = timer1_counter;
+  TCCR1B |= (1 << CS12);
+  TIMSK1 |= (1 << TOIE1);
+  interrupts();
+}
+
+ISR(TIMER1_OVF_vect) {
+  TCNT1 = timer1_counter;
+  Serial.println("BASE");
+  Serial.println(base.read());
+ 
+  Serial.println("SHOULDER");
+  Serial.println(shoulder.read());
+
+  Serial.println("ELBOW");
+  Serial.println(elbow.read());
 }
 
 void loop() {
-
-  // int blinkCounter = 0;
-
-  while(true) {
-    Serial.println("BASE");
-    Serial.println(base.read());
- 
-    Serial.println("SHOULDER");
-    Serial.println(shoulder.read());
-
-    Serial.println("ELBOW");
-    Serial.println(elbow.read());
- 
-    /*
-    blinkCounter++;
-
-    if (blinkCounter >= random(50, 100)) {
-      blinkCounter = 0;
-      drawBlink();
-      delay(50);
-      drawEyes();
-
-    */
+  
+  /*
+  while (eyeHeight < 6) {
+    drawEyes(0,eyeHeight);
+    eyeHeight++;
+    delay(20);
   }
+
+  while (eyeHeight > -6) {
+    drawEyes(0,eyeHeight);
+    eyeHeight--;
+    delay(20);
+  }
+  */
 }
