@@ -3,8 +3,13 @@ import time
 import os
 import threading
 import pyttsx3
+import queue
 
 voice = pyttsx3.init()
+
+baseQueue = queue.Queue()
+shoulderQueue = queue.Queue()
+elbowQueue = queue.Queue()
 
 from roboarm import Arm
 arm = Arm()
@@ -13,13 +18,17 @@ import BlynkLib
 BLYNK_AUTH = 'fe21DHbGkGWUTaTwSrwwViUyIFGWXSEc'
 blynk = BlynkLib.Blynk(BLYNK_AUTH)
 
-ArduinoSerial = serial.Serial('/dev/ttyUSB0',9600)
+ArduinoSerial = serial.Serial('/dev/ttyUSB1',9600)
 
 def defineButtonControls():
 
     @blynk.VIRTUAL_WRITE(1)
     def baseRotationHandlerCounter(value):
-        if int(value[0]) == 1:
+
+        baseRot = baseQueue.get()
+
+        if int(value[0]) == 1 and baseRot <= 14:
+            print
             arm.base.rotate_counter(timeout = None)
             ArduinoSerial.write(b"EYESLEFT")
         if int(value[0]) == 0:
@@ -28,7 +37,11 @@ def defineButtonControls():
 
     @blynk.VIRTUAL_WRITE(2)
     def baseRotationHandlerClock(value):
-        if int(value[0]) == 1:
+
+        baseRot = baseQueue.get()
+
+        if int(value[0]) == 1 and baseRot >= 0:
+            print(baseRot)
             arm.base.rotate_clock(timeout = None)
             ArduinoSerial.write(b"EYESRIGHT")
         if int(value[0]) == 0:
@@ -206,6 +219,16 @@ def serialComms():
             print(outputString)
             print()
             print("Cycle count: " + str(cycles))
+
+        # Clear queue - each queue is a running stream of values
+        baseQueue.queue.clear()
+        shoulderQueue.queue.clear()
+        elbowQueue.queue.clear()
+
+        # Send data to queues for communicating with Blynk control code
+        baseQueue.put(baseRot + baseRotOffset)
+        shoulderQueue.put(shoulderRot + shoulderRotOffset)
+        elbowQueue.put(elbowRot + elbowRotOffset)
 
         cycles = cycles + 1
 
